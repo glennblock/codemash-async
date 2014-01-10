@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Async in node.js, let me count the ways</title>
+
+    <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+    <meta name="author" content="Hakim El Hattab">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+    <link rel="stylesheet" href="css/custom.css">
+
+    <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+    <script>
+      document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        <section>
+          <h1>Async in node.js</h1>
+          <h3>Let me count the ways</h3>
+          <p>
+            <small>Created by <a href="http://codebetter.com/glennblock">Glenn Block</a> / <a href="http://twitter.com/gblock">@gblock</a></small>
+          </p>
+        </section>
+        <section data-background="glenn.jpg">
+          <h2 class="intro">Who is this guy?</h2>
+          <h3 class="fragment intro" >Polyglot</li>
+          <h3 class="fragment intro">Adventurer</li>
+          <h3 class="fragment intro">Tweet addict</li>
+          <h3 class="fragment intro">Head in the clouds</li>
+          <h3 class="fragment" style="color: green"><i>Splunker</i></li>
+        </section>
+        <section data-background="abc.jpg" style="backround-color:black">
+          <h2>Node development</h2>
+          <p style="background-color: black">Getting started with node is really easy!</p>
+          <pre><code>
+var http=require('http');
+http.createServer(function(req,res) {
+  res.end('Hello World\n');
+}).listen(1337);
+console.log("WOW this is amazingly easy!");
+          </code></pre>
+        </section>
+        <section>
+          <p>And then you start writing async...</p>
+        </section>
+        <section data-background="headache.jpg">
+          <p style="background-color: black">And the pain sets in</p>
+        </section>
+        <section>
+          <section data-background="hulk.jpg">
+            <p style="background-color: black">And you start losing control</p>
+          </section>
+          <section>
+            <p>Easy things become harder</p>
+          </section>
+          <section>
+            <p>From this...</p>
+            <pre><code>function MarkCompleted (req, res) { 
+  var postedItems = req.body.completed;
+  if (!postedItems.forEach) 
+    postedItems = [postedItems];
+
+  for(int i=0; i++; i < postedItems.count) {
+    item = getItemToUpdate();
+    item.completed = true;
+    self.client.updateEntity('tasks', item);
+  }
+  var taskItems = self.getItems(false);
+  self.showResults(taskItems)
+}
+            </code></pre>
+          </section>
+          <section>
+            <p>To this...</p>
+            <pre><code>//Is it really this hard???
+function markCompleted (postedItems, callback) {
+  var processNextItem = function (err) {
+    if (err) 
+      callback(err);
+ 
+    var item = postedItems.pop();
+    if (item) 
+      process.getItemToUpdate(item);
+    else
+      callback(err);
+  };
+ 
+  var getItemToUpdate = function (item) {
+    self.client.queryEntity('tasks', 'partition1', item, process.updateItem);
+  };
+ 
+  var updateItem = function (err, task) {
+    if (err) 
+      callback(err)
+    if (task) {
+      task.completed = true;
+    }
+  }
+ 
+  processNextItem();
+}
+            </code></pre>
+          </section>
+          <section data-background="spaghetti.jpg">
+            <p style="background-color: black">Callback hell</p>
+            <pre><code>function register_:-(_(email,password,confirm,callback) {
+  var customer = {email:email, password:password, confirm:confirm};
+  validate(customer, function(err, isValid) {
+    if (!err) {
+      insert(customer, function(err, inserted) {
+        if (!err) {
+          sendEmail(customer,function(err, emailSent) {
+            if (!err) 
+              callback(null, customer);
+            else
+              callback(err, null);
+          });
+        }
+        else 
+          callback(err, null);
+      }
+    }
+    else
+      callback(err,null);
+  }
+}
+            </code></pre>
+          </section>
+
+          <section data-background="bug.jpg">
+            <p style="background-color: black">Subtle and hard to debug errors creep in</p>
+          </section>
+          <section data-background="bug.jpg">
+            <pre><code>//WTF doesn't this work???
+function doSomething() {
+  var item = makeAnAsyncCall();
+  makeAnotherAsyncCall(item.url);
+  console.log("done")
+}
+
+function makeAnAsyncCall() {
+  request("http://someapi.com", function(response, body) {
+    return body;
+  });
+}
+
+function makeAnotherAsyncCall(url) {
+  request(url, function(response, body) {
+    //stuff
+  });
+}
+            </code></pre>
+          </section>
+        </section>
+        <section data-background="heaven.jpg">
+          <h1 style="background-color: black">Fortunately, there is help</h1>
+        </section>
+        <section>
+          <h2 >Through patterns, and libraries</h2>
+        </section>
+        <section>
+          <h2>And changes coming to Javascript in ES6</h1>
+        </section>
+        <section data-background="heaven.jpg">
+          <h1 style="background-color: black">Raw JavaScript</h1>
+        </section>
+        <section data-background="heaven.jpg">
+          <h1 style="background-color: black">async</h1>
+          <p style="background-color: black">The king of asynchronous control flow and collection mgmt</p>
+        </section>
+        <section data-background="heaven.jpg">
+          <h1 style="background-color: black">bluebird (Promises)</h1>
+          <p style="background-color: black">Futures</p>
+        </section>
+        <section data-background="heaven.jpg">
+          <h1 style="background-color: black">rx</h1>
+          <p style="background-color: black">The world is made up of Observables and Observers</p>
+        </section>
+        <section data-background="heaven.jpg">
+          <h1 style="background-color: black">fibers</h1>
+          <p style="background-color: black">Would you like some Co with that routine?</p>
+        </section>
+        <section data-background="heaven.jpg">
+          <h1 style="background-color: black">generators</h1>
+          <p style="background-color: black">Co-routines in the box</p>
+        </section>
+        <section>
+          <h1>Thank You!</h1>
+        </section>
+        <section>
+          <h1>More information</h1>
+          <p>async - https://github.com/caolan/async</p>
+          <p>bluebird - https://github.com/petkaantonov/bluebird</p>
+          <p>rx - https://github.com/Reactive-Extensions/RxJS</p>
+          <p>fibers - https://github.com/laverdet/node-fibers</p>
+          <p>streamline - https://github.com/Sage/streamlinejs</p>
+          <p>generators - http://wiki.ecmascript.org/doku.php?id=harmony:generators</p>
+          <p>gen-run - https://github.com/creationix/gen-run</p>
+          <p>galaxy - https://github.com/bjouhier/galaxy</p>
+      </div>
+    </div>
+
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+
+  </body>
+</html>
