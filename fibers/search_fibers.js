@@ -28,7 +28,7 @@ function search() {
             fiber.run();
         });
         Fiber.yield();
-        service.search("search index=azure sourcetype=website-iis-log | head 5", {}, function(err, job) {
+        service.search("search index=_internal | head 5", {}, function(err, job) {
             fiber.run(job);
         });
         var job = Fiber.yield();

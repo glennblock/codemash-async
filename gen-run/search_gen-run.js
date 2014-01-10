@@ -32,7 +32,7 @@ function login() {
 
 function search() {
     return function(callback) {
-        service.search("search index=azure sourcetype=website-iis-log | head 5", {}, function(err, newJob) {
+        service.search("search index=_internal | head 5", {}, function(err, newJob) {
             job = newJob;
             callback();
         });

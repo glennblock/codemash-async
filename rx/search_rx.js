@@ -25,7 +25,7 @@ function login() {
 }
 
 function search() {
-    return Rx.Observable.fromNodeCallback(service.search.bind(service))("search index=azure sourcetype=website-iis-log | head 5", {});
+    return Rx.Observable.fromNodeCallback(service.search.bind(service))("search index=_internal | head 5", {});
 }
 
 function fetch(newJob) {

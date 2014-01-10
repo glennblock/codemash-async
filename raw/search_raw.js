@@ -20,7 +20,7 @@ var service = new splunkjs.Service({
 
 service.login(function(err,success) {
     if (err) throw err;
-    service.search("search index=azure sourcetype=website-iis-log | head 100", {}, function(err, newJob) {
+    service.search("search index=_internal | head 5", {}, function(err, newJob) {
         job = newJob;
 
         function onSearch() {

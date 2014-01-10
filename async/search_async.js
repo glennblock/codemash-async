@@ -29,7 +29,7 @@ function search() {
                     done("Error logging in");
                 }
                 
-                service.search("search index=azure sourcetype=website-iis-log | head 5", {}, done);
+                service.search("search index=_internal | head 5", {}, done);
             },
             // Wait until the job is done
              function(job, done) {

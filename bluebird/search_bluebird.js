@@ -36,7 +36,7 @@ function onLogin(success) {
     if (!success) {
         throw "Error logging on";
     }
-    return service.searchAsync("search index=azure sourcetype=website-iis-log | head 5", {});
+    return service.searchAsync("search index=_internal | head 5", {});
 }
 
 function getResults(job, originalJob) {

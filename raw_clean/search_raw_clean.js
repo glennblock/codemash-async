@@ -24,7 +24,7 @@ function search() {
 
 function onLogin(err, success) {
     if (err) throw err;
-    service.search("search index=azure sourcetype=website-iis-log | head 5", {}, onSearch);
+    service.search("search index=_internal | head 5", {}, onSearch);
 }
 
 function onSearch(err, newJob) {
