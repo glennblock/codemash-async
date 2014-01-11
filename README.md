@@ -5,6 +5,7 @@ Async slides and code from my Codemash 2014 session on async programming in node
 
 ## What's in the box
 
+* slides - Slides from my talk. You can view them online [here] (https://rawgithub.com/glennblock/codemash-async/master/slides/index.html#)
 * search_raw.js - raw javascript version, a monolithic, nested-callback, unmaintainable mess.
 * search_clean.js - refactored version without nested callbacks
 * search_async.js - using the [async] (https://npmjs.org/package/async) module.
