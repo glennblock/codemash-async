@@ -83,7 +83,7 @@ console.log("WOW this is amazingly easy!");
   if (!postedItems.forEach) 
     postedItems = [postedItems];
 
-  for(int i=0; i++; i < postedItems.count) {
+  for(var i=0; i++; i < postedItems.count) {
     item = getItemToUpdate();
     item.completed = true;
     self.client.updateEntity('tasks', item);
@@ -141,11 +141,11 @@ function markCompleted (postedItems, callback) {
         }
         else 
           callback(err, null);
-      }
+      });
     }
     else
       callback(err,null);
-  }
+  });
 }
             </code></pre>
           </section>
